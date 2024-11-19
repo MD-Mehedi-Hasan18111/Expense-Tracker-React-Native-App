@@ -1,3 +1,4 @@
+import React from "react";
 import { Tabs, useRouter } from "expo-router";
 import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
