@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   View,
@@ -10,6 +11,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HomeScreen = () => {
+  const router = useRouter();
   const transactions = [
     {
       id: "1",
@@ -86,7 +88,7 @@ const HomeScreen = () => {
       {/* Recent Transactions */}
       <View style={styles.transactionsHeader}>
         <Text style={styles.transactionsTitle}>Recent Transaction</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/transaction")}>
           <Text style={styles.viewAll}>View All</Text>
         </TouchableOpacity>
       </View>
