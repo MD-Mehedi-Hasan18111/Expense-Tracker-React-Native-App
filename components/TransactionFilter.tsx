@@ -24,16 +24,19 @@ const TransactionFilter = () => {
 
   return (
     <View style={styles.container}>
-      <CustomPicker
+      {/* <CustomPicker
         options={monthOptions}
         selectedValue={selectedMonth}
         onValueChange={(value) => setSelectedMonth(value)}
-      />
-      <CustomPicker
-        options={filterOptions}
-        selectedValue={selectedFilter}
-        onValueChange={(value) => setSelectedFilter(value)}
-      />
+      /> */}
+      <View style={{ flexDirection: "row", alignItems: 'center', columnGap: 3 }}>
+        <Text style={{ fontSize: 16, fontWeight: 500 }}>Filter by Category: </Text>
+        <CustomPicker
+          options={filterOptions}
+          selectedValue={selectedFilter}
+          onValueChange={(value) => setSelectedFilter(value)}
+        />
+      </View>
     </View>
   );
 };
@@ -44,7 +47,7 @@ const styles = StyleSheet.create({
     columnGap: 14,
     alignItems: "center",
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
 });
 

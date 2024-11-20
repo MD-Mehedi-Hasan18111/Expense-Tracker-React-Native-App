@@ -1,73 +1,51 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import TransactionFilter from "../components/TransactionFilter";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "expo-router";
+import NoTransactions from "../components/NoTransaction";
+import moment from "moment";
 
-const transactions = [
-  {
-    id: "1",
-    category: "Shopping",
-    description: "Buy some grocery",
-    amount: "-5120",
-    time: "10:00 AM",
-    type: "expense",
-  },
-  {
-    id: "2",
-    category: "Food",
-    description: "Arabian Hut",
-    amount: "-532",
-    time: "07:30 PM",
-    type: "expense",
-  },
-  {
-    id: "3",
-    category: "Salary",
-    description: "Salary for August",
-    amount: "+5000",
-    time: "04:30 PM",
-    type: "income",
-  },
-  {
-    id: "4",
-    category: "Subscription",
-    description: "Disney+ Annual..",
-    amount: "-1180",
-    time: "03:30 PM",
-    type: "expense",
-  },
-  {
-    id: "5",
-    category: "Fuel",
-    description: "kozhikode",
-    amount: "-1032",
-    time: "07:30 PM",
-    type: "expense",
-  },
-  {
-    id: "6",
-    category: "Movie",
-    description: "Super Cop",
-    amount: "-532",
-    time: "07:30 PM",
-    type: "expense",
-  },
-  {
-    id: "7",
-    category: "Food",
-    description: "Burger",
-    amount: "-150",
-    time: "07:30 PM",
-    type: "expense",
-  },
-];
+interface ITransaction {
+  id: string;
+  amount: string;
+  category: string;
+  description: string;
+  transactionType: "expense" | "income";
+  date: string;
+}
 
 export default function TransactionsScreen() {
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getTransactions = async () => {
+    try {
+      const storedTransactions = await AsyncStorage.getItem("transactions");
+      const parsedTransactions = storedTransactions
+        ? JSON.parse(storedTransactions)
+        : [];
+
+      // validate data is an array of transactions
+      if (Array.isArray(parsedTransactions)) {
+        setTransactions(parsedTransactions);
+      } else {
+        setTransactions([]);
+      }
+    } catch (error) {
+      console.error("Failed to retrieve transactions:", error);
+      setTransactions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getTransactions();
+    }, [])
+  );
+
   const renderTransaction = ({ item }: { item: (typeof transactions)[0] }) => (
     <View style={styles.transactionItem}>
       <View style={styles.transactionInfo}>
@@ -78,12 +56,14 @@ export default function TransactionsScreen() {
         <Text
           style={[
             styles.amount,
-            item.type === "income" ? styles.income : styles.expense,
+            item.transactionType === "income" ? styles.income : styles.expense,
           ]}
         >
-          {item.amount}
+          {`${item.transactionType === "income" ? "+" : "-"}` + item.amount}
         </Text>
-        <Text style={styles.time}>{item.time}</Text>
+        <Text style={styles.time}>
+          {moment(item.date).format("DD MMM YYYY")}
+        </Text>
       </View>
     </View>
   );
@@ -92,7 +72,7 @@ export default function TransactionsScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Transactions</Text>
+        <Text style={styles.title}>All Transactions</Text>
       </View>
 
       {/* Filters */}
@@ -102,9 +82,10 @@ export default function TransactionsScreen() {
       <FlatList
         data={transactions}
         renderItem={renderTransaction}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id || index.toString()}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<NoTransactions />}
       />
     </View>
   );
@@ -125,7 +106,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#000",
+    color: "purple",
   },
   list: {
     paddingBottom: 60,
@@ -149,11 +130,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#000",
+    textTransform: "capitalize",
   },
   description: {
     fontSize: 12,
     color: "#888",
     marginTop: 4,
+    textTransform: "capitalize",
   },
   transactionDetails: {
     alignItems: "flex-end",
