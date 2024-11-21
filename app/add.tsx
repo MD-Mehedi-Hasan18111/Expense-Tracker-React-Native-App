@@ -1,23 +1,17 @@
 import React, { useState } from "react";
-import {
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Platform,
-  Alert,
-} from "react-native";
+import { Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import { useTransactions } from "../hooks/useTransactions";
 
 interface ITransaction {
   id: string;
   amount: string;
   category: string;
   description: string;
-  transactionType: string;
+  transactionType: "expense" | "income";
   date: string;
 }
 
@@ -26,14 +20,29 @@ const AddScreen = () => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [transactionType, setTransactionType] = useState("expense");
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [transactionType, setTransactionType] = useState<"expense" | "income">(
+    "expense"
+  );
+  const { transactions, setTransactions } = useTransactions();
+
+  // Calculate Income and Expenses totals
+  const incomeTotal = transactions
+    .filter((transaction) => transaction.transactionType === "income")
+    .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+  const expensesTotal = transactions
+    .filter((transaction) => transaction.transactionType === "expense")
+    .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // Function to handle saving transaction to AsyncStorage
   const handleSaveTransaction = async () => {
     if (!amount || !category || !description) {
       Alert.alert("Please fill all fields.");
+      return;
+    }
+
+    if (incomeTotal - expensesTotal < Number(amount) && transactionType === 'expense') {
+      Alert.alert("You have not sufficient balance to add Expense");
       return;
     }
 
@@ -71,10 +80,6 @@ const AddScreen = () => {
       setCategory("");
       setDescription("");
       setTransactionType("expense");
-      // setDate("");
-
-      // Retrieve the latest transactions and update state
-      setTransactions(updatedTransactions);
     } catch (error) {
       console.error("Error saving transaction:", error);
       Alert.alert("Failed to save transaction.");

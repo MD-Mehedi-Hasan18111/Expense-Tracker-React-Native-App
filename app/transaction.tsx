@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import NoTransactions from "../components/NoTransaction";
 import moment from "moment";
+import { useTransactions } from "../hooks/useTransactions";
 
 interface ITransaction {
   id: string;
@@ -24,7 +25,8 @@ interface ITransaction {
 const ITEMS_PER_PAGE = 10;
 
 export default function TransactionsScreen() {
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  // const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const { transactions, setTransactions } = useTransactions();
   const [filteredTransactions, setFilteredTransactions] = useState<
     ITransaction[]
   >([]);
@@ -98,6 +100,22 @@ export default function TransactionsScreen() {
     }, [transactions, filterCategory])
   );
 
+  const formatNumberWithCommas = (num: number): string => {
+    const numStr = num.toString();
+    // Split the number into integer and fractional parts
+    const [integerPart, decimalPart] = numStr.split(".");
+    // Handle the integer part with Indian number formatting
+    const lastThree = integerPart.slice(-3); // Last three digits
+    const rest = integerPart.slice(0, -3); // Digits before the last three
+    const formattedIntegerPart = rest
+      ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree
+      : lastThree;
+    // Append fractional part if it exists
+    return decimalPart
+      ? `${formattedIntegerPart}.${decimalPart}`
+      : formattedIntegerPart;
+  };
+
   const renderTransaction = ({ item }: { item: (typeof transactions)[0] }) => (
     <View style={styles.transactionItem}>
       <View style={styles.transactionInfo}>
@@ -111,7 +129,9 @@ export default function TransactionsScreen() {
             item.transactionType === "income" ? styles.income : styles.expense,
           ]}
         >
-          {`${item.transactionType === "income" ? "+" : "-"}` + item.amount} BDT
+          {`${item.transactionType === "income" ? "+" : "-"}` +
+            formatNumberWithCommas(Number(item.amount))}{" "}
+          BDT
         </Text>
         <Text style={styles.time}>{moment(item.date).format("DD MMM LT")}</Text>
       </View>

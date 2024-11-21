@@ -13,6 +13,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import NoTransactions from "../components/NoTransaction";
 import moment from "moment";
+import { useTransactions } from "../hooks/useTransactions";
 
 interface ITransaction {
   id: string;
@@ -25,7 +26,8 @@ interface ITransaction {
 
 const HomeScreen = () => {
   const router = useRouter();
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  // const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const { transactions, setTransactions } = useTransactions();
   const [loading, setLoading] = useState<boolean>(true);
   const getTransactions = async () => {
     try {
@@ -75,7 +77,19 @@ const HomeScreen = () => {
     .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
   // Helper function to format numbers with commas
   const formatNumberWithCommas = (num: number): string => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const numStr = num.toString();
+    // Split the number into integer and fractional parts
+    const [integerPart, decimalPart] = numStr.split(".");
+    // Handle the integer part with Indian number formatting
+    const lastThree = integerPart.slice(-3); // Last three digits
+    const rest = integerPart.slice(0, -3); // Digits before the last three
+    const formattedIntegerPart = rest
+      ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree
+      : lastThree;
+    // Append fractional part if it exists
+    return decimalPart
+      ? `${formattedIntegerPart}.${decimalPart}`
+      : formattedIntegerPart;
   };
 
   // const clearAllTransactions = async () => {
@@ -101,7 +115,9 @@ const HomeScreen = () => {
       {/* Account Balance */}
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceLabel}>Account Balance</Text>
-        <Text style={styles.balance}>00.0 BDT</Text>
+        <Text style={styles.balance}>
+          {formatNumberWithCommas(incomeTotal - expensesTotal)} BDT
+        </Text>
 
         <View style={styles.incomeExpense}>
           <TouchableOpacity style={styles.incomeBox}>
@@ -157,7 +173,9 @@ const HomeScreen = () => {
               )}
             </Text>
             <View>
-              <Text style={styles.transactionAmount}>{item.amount} BDT</Text>
+              <Text style={styles.transactionAmount}>
+                {formatNumberWithCommas(Number(item.amount))} BDT
+              </Text>
               <Text style={styles.transactionCategory}>{item.category}</Text>
             </View>
           </View>
