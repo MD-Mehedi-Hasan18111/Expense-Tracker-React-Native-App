@@ -98,16 +98,16 @@ export default function RootLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="settings"
           options={{
             tabBarLabel: ({ focused, color }) => (
               <Text style={{ color: focused ? "purple" : color, fontSize: 12 }}>
-                Profile
+                Settings
               </Text>
             ),
             tabBarIcon: ({ focused, color }) => (
               <Ionicons
-                name="person"
+                name="settings"
                 size={24}
                 color={focused ? "purple" : color}
               />

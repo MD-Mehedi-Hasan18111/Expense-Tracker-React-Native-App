@@ -76,7 +76,7 @@ const StatisticsScreen = () => {
   const chartData = processDataForChart(transactions);
 
   const finalChartData = chartData.map((item) => ({
-    name: item.name,
+    name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
     amount: item.amount,
     color: getRandomColor(),
     legendFontColor: "#7F7F7F",
@@ -193,7 +193,8 @@ const StatisticsScreen = () => {
         keyExtractor={(item, index) =>
           `${item.name}-${item.transactionType}-${index}`
         }
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 10, marginBottom: 70 }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

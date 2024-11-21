@@ -41,7 +41,10 @@ const AddScreen = () => {
       return;
     }
 
-    if (incomeTotal - expensesTotal < Number(amount) && transactionType === 'expense') {
+    if (
+      incomeTotal - expensesTotal < Number(amount) &&
+      transactionType === "expense"
+    ) {
       Alert.alert("You have not sufficient balance to add Expense");
       return;
     }
@@ -90,51 +93,89 @@ const AddScreen = () => {
 
   const transactionCategories = [
     { label: "Select Transaction Category", value: "" },
-    { label: "Food", value: "food" },
-    { label: "Shopping", value: "shopping" },
-    { label: "Travel", value: "travel" },
-    { label: "Education", value: "education" },
-    { label: "Salary", value: "salary" },
-    { label: "Revenue", value: "revenue" },
-    { label: "Rent", value: "rent" },
-    { label: "Utilities", value: "utilities" },
-    { label: "Healthcare", value: "healthcare" },
-    { label: "Mobile Recharge", value: "mobile recharge" },
-    { label: "Groceries", value: "groceries" },
+    { label: "Food", value: "food", transactionTypes: "expense" },
+    { label: "Shopping", value: "shopping", transactionTypes: "expense" },
+    { label: "Travel", value: "travel", transactionTypes: "expense" },
+    { label: "Education", value: "education", transactionTypes: "expense" },
+    { label: "Salary", value: "salary", transactionTypes: "income" },
+    { label: "Revenue", value: "revenue", transactionTypes: "income" },
+    { label: "Rent", value: "rent", transactionTypes: "expense" },
+    { label: "Utilities", value: "utilities", transactionTypes: "expense" },
+    { label: "Healthcare", value: "healthcare", transactionTypes: "expense" },
+    {
+      label: "Mobile Recharge",
+      value: "mobile recharge",
+      transactionTypes: "expense",
+    },
+    { label: "Groceries", value: "groceries", transactionTypes: "expense" },
     {
       label: "Subscriptions",
       value: "subscriptions",
+      transactionTypes: "expense",
     },
-    { label: "Fitness", value: "fitness" },
-    { label: "Vehicle", value: "vehicle" },
-    { label: "Gifts", value: "gifts" },
-    { label: "Donations", value: "donations" },
-    { label: "Savings", value: "savings" },
-    { label: "Investments", value: "investments" },
-    { label: "Tax Payment", value: "tax payment" },
-    { label: "Loan EMI", value: "loan emi" },
-    { label: "Home Maintenance", value: "home maintenance" },
-    { label: "Office Supplies", value: "office supplies" },
-    { label: "Furniture", value: "furniture" },
-    { label: "Electronics", value: "electronics" },
-    { label: "Clothing", value: "clothing" },
-    { label: "Beauty Products", value: "beauty products" },
-    { label: "Laundry", value: "laundry" },
-    { label: "Parking", value: "parking" },
-    { label: "Toll Charges", value: "toll charges" },
+    { label: "Fitness", value: "fitness", transactionTypes: "expense" },
+    { label: "Vehicle", value: "vehicle", transactionTypes: "expense" },
+    { label: "Gifts", value: "gifts", transactionTypes: "expense" },
+    { label: "Donations", value: "donations", transactionTypes: "expense" },
+    { label: "Savings", value: "savings", transactionTypes: "income" },
+    { label: "Investments", value: "investments", transactionTypes: "expense" },
+    { label: "Tax Payment", value: "tax payment", transactionTypes: "expense" },
+    { label: "Loan EMI", value: "loan emi", transactionTypes: "expense" },
+    {
+      label: "Home Maintenance",
+      value: "home maintenance",
+      transactionTypes: "expense",
+    },
+    {
+      label: "Office Supplies",
+      value: "office supplies",
+      transactionTypes: "expense",
+    },
+    { label: "Furniture", value: "furniture", transactionTypes: "expense" },
+    { label: "Electronics", value: "electronics", transactionTypes: "expense" },
+    { label: "Clothing", value: "clothing", transactionTypes: "expense" },
+    {
+      label: "Beauty Products",
+      value: "beauty products",
+      transactionTypes: "expense",
+    },
+    { label: "Laundry", value: "laundry", transactionTypes: "expense" },
+    { label: "Parking", value: "parking", transactionTypes: "expense" },
+    {
+      label: "Toll Charges",
+      value: "toll charges",
+      transactionTypes: "expense",
+    },
     {
       label: "Hobby Materials",
       value: "hobby materials",
+      transactionTypes: "expense",
     },
-    { label: "Pet Care", value: "pet care" },
-    { label: "Emergency Fund", value: "emergency fund" },
-    { label: "Holiday Trip", value: "holiday trip" },
-    { label: "Party", value: "party" },
-    { label: "Courier Services", value: "courier services" },
-    { label: "Business Expenses", value: "business expenses" },
-    { label: "Freelance", value: "freelance" },
-    { label: "Commission", value: "commission" },
-    { label: "Bonus", value: "bonus" },
+    { label: "Pet Care", value: "pet care", transactionTypes: "expense" },
+    {
+      label: "Emergency Fund",
+      value: "emergency fund",
+      transactionTypes: "expense",
+    },
+    {
+      label: "Holiday Trip",
+      value: "holiday trip",
+      transactionTypes: "expense",
+    },
+    { label: "Party", value: "party", transactionTypes: "expense" },
+    {
+      label: "Courier Services",
+      value: "courier services",
+      transactionTypes: "expense",
+    },
+    {
+      label: "Business Expenses",
+      value: "business expenses",
+      transactionTypes: "expense",
+    },
+    { label: "Freelance", value: "freelance", transactionTypes: "income" },
+    { label: "Commission", value: "commission", transactionTypes: "income" },
+    { label: "Bonus", value: "bonus", transactionTypes: "income" },
   ];
 
   return (
@@ -182,8 +223,13 @@ const AddScreen = () => {
           }}
         >
           <Picker
-            selectedValue={category}
-            onValueChange={(itemValue) => setCategory(itemValue)}
+            selectedValue={`${category}-${transactionType}`}
+            onValueChange={(itemValue) => {
+              setCategory(itemValue?.split("-")[0]);
+              setTransactionType(
+                itemValue?.split("-")[1] as "expense" | "income"
+              );
+            }}
             style={{
               height: "auto",
               width: "100%",
@@ -193,8 +239,16 @@ const AddScreen = () => {
               return (
                 <Picker.Item
                   key={category.value}
-                  label={category.label}
-                  value={category.value}
+                  label={`${category.label} ${
+                    category.transactionTypes
+                      ? `(${
+                          category.transactionTypes.charAt(0).toUpperCase() +
+                          category.transactionTypes.slice(1).toLowerCase()
+                        })`
+                      : ""
+                  }`}
+                  value={`${category.value}-${category.transactionTypes}`}
+                  style={{ textTransform: "capitalize" }}
                 />
               );
             })}
@@ -213,47 +267,6 @@ const AddScreen = () => {
           value={description}
           onChangeText={setDescription}
         />
-
-        <View style={{ marginBottom: 15 }}>
-          <Text style={{ fontSize: 16, color: "#000", marginBottom: 10 }}>
-            Choose Transaction Type:{" "}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                backgroundColor:
-                  transactionType === "expense" ? "purple" : "#aaa",
-                padding: 10,
-                borderRadius: 5,
-                flex: 1,
-                marginRight: 5,
-              }}
-              onPress={() => setTransactionType("expense")}
-            >
-              <Text style={{ color: "#fff", textAlign: "center" }}>
-                Expense
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                backgroundColor:
-                  transactionType === "income" ? "purple" : "#aaa",
-                padding: 10,
-                borderRadius: 5,
-                flex: 1,
-                marginLeft: 5,
-              }}
-              onPress={() => setTransactionType("income")}
-            >
-              <Text style={{ color: "#fff", textAlign: "center" }}>Income</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
 
         <TouchableOpacity
           style={{

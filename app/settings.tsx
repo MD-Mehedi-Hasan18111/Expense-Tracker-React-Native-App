@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-const ProfileScreen = () => {
+const SettingsScreen = () => {
   return (
     <View
       style={{
@@ -10,9 +10,9 @@ const ProfileScreen = () => {
         alignItems: "center",
       }}
     >
-      <Text>This is Profile Screen.</Text>
+      <Text>This is Settings Screen.</Text>
     </View>
   );
 };
 
-export default ProfileScreen;
+export default SettingsScreen;
