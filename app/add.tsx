@@ -83,6 +83,55 @@ const AddScreen = () => {
     }
   };
 
+  const transactionCategories = [
+    { label: "Select Transaction Category", value: "" },
+    { label: "Food", value: "food" },
+    { label: "Shopping", value: "shopping" },
+    { label: "Travel", value: "travel" },
+    { label: "Education", value: "education" },
+    { label: "Salary", value: "salary" },
+    { label: "Revenue", value: "revenue" },
+    { label: "Rent", value: "rent" },
+    { label: "Utilities", value: "utilities" },
+    { label: "Healthcare", value: "healthcare" },
+    { label: "Mobile Recharge", value: "mobile recharge" },
+    { label: "Groceries", value: "groceries" },
+    {
+      label: "Subscriptions",
+      value: "subscriptions",
+    },
+    { label: "Fitness", value: "fitness" },
+    { label: "Vehicle", value: "vehicle" },
+    { label: "Gifts", value: "gifts" },
+    { label: "Donations", value: "donations" },
+    { label: "Savings", value: "savings" },
+    { label: "Investments", value: "investments" },
+    { label: "Tax Payment", value: "tax payment" },
+    { label: "Loan EMI", value: "loan emi" },
+    { label: "Home Maintenance", value: "home maintenance" },
+    { label: "Office Supplies", value: "office supplies" },
+    { label: "Furniture", value: "furniture" },
+    { label: "Electronics", value: "electronics" },
+    { label: "Clothing", value: "clothing" },
+    { label: "Beauty Products", value: "beauty products" },
+    { label: "Laundry", value: "laundry" },
+    { label: "Parking", value: "parking" },
+    { label: "Toll Charges", value: "toll charges" },
+    {
+      label: "Hobby Materials",
+      value: "hobby materials",
+    },
+    { label: "Pet Care", value: "pet care" },
+    { label: "Emergency Fund", value: "emergency fund" },
+    { label: "Holiday Trip", value: "holiday trip" },
+    { label: "Party", value: "party" },
+    { label: "Courier Services", value: "courier services" },
+    { label: "Business Expenses", value: "business expenses" },
+    { label: "Freelance", value: "freelance" },
+    { label: "Commission", value: "commission" },
+    { label: "Bonus", value: "bonus" },
+  ];
+
   return (
     <View
       style={{
@@ -103,7 +152,7 @@ const AddScreen = () => {
       </Text>
 
       {/* Transaction Form */}
-      <View style={{ rowGap: 10 }}>
+      <View style={{ rowGap: 12 }}>
         <TextInput
           placeholder="Enter Amount"
           keyboardType="numeric"
@@ -135,16 +184,20 @@ const AddScreen = () => {
               width: "100%",
             }}
           >
-            <Picker.Item label="Select Category" value="" />
-            <Picker.Item label="Food" value="food" />
-            <Picker.Item label="Travel" value="travel" />
-            <Picker.Item label="Shopping" value="shopping" />
-            <Picker.Item label="Salary" value="salary" />
+            {transactionCategories?.map((category) => {
+              return (
+                <Picker.Item
+                  key={category.value}
+                  label={category.label}
+                  value={category.value}
+                />
+              );
+            })}
           </Picker>
         </View>
 
         <TextInput
-          placeholder="Enter Description"
+          placeholder="Write transaction description"
           style={{
             borderWidth: 1,
             borderColor: "#ccc",
@@ -156,38 +209,45 @@ const AddScreen = () => {
           onChangeText={setDescription}
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: 15,
-          }}
-        >
-          <TouchableOpacity
+        <View style={{ marginBottom: 15 }}>
+          <Text style={{ fontSize: 16, color: "#000", marginBottom: 10 }}>
+            Choose Transaction Type:{" "}
+          </Text>
+          <View
             style={{
-              backgroundColor:
-                transactionType === "expense" ? "purple" : "#ccc",
-              padding: 10,
-              borderRadius: 5,
-              flex: 1,
-              marginRight: 5,
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
-            onPress={() => setTransactionType("expense")}
           >
-            <Text style={{ color: "#fff", textAlign: "center" }}>Expense</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: transactionType === "income" ? "purple" : "#ccc",
-              padding: 10,
-              borderRadius: 5,
-              flex: 1,
-              marginLeft: 5,
-            }}
-            onPress={() => setTransactionType("income")}
-          >
-            <Text style={{ color: "#fff", textAlign: "center" }}>Income</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor:
+                  transactionType === "expense" ? "purple" : "#aaa",
+                padding: 10,
+                borderRadius: 5,
+                flex: 1,
+                marginRight: 5,
+              }}
+              onPress={() => setTransactionType("expense")}
+            >
+              <Text style={{ color: "#fff", textAlign: "center" }}>
+                Expense
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor:
+                  transactionType === "income" ? "purple" : "#aaa",
+                padding: 10,
+                borderRadius: 5,
+                flex: 1,
+                marginLeft: 5,
+              }}
+              onPress={() => setTransactionType("income")}
+            >
+              <Text style={{ color: "#fff", textAlign: "center" }}>Income</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <TouchableOpacity

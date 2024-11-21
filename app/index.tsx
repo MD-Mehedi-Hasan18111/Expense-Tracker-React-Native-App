@@ -1,5 +1,6 @@
-import { useRouter } from "expo-router";
-import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -9,32 +10,47 @@ import {
   SafeAreaView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import NoTransactions from "../components/NoTransaction";
+
+interface ITransaction {
+  id: string;
+  amount: string;
+  category: string;
+  description: string;
+  transactionType: "expense" | "income";
+  date: string;
+}
 
 const HomeScreen = () => {
   const router = useRouter();
-  const transactions = [
-    {
-      id: "1",
-      amount: 15000,
-      type: "Income",
-      icon: "arrow-up",
-      category: "Income",
-    },
-    {
-      id: "2",
-      amount: 6500,
-      type: "Expense",
-      icon: "arrow-down",
-      category: "Food",
-    },
-    {
-      id: "3",
-      amount: 2800,
-      type: "Income",
-      icon: "arrow-up",
-      category: "Income",
-    },
-  ];
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const getTransactions = async () => {
+    try {
+      const storedTransactions = await AsyncStorage.getItem("transactions");
+      const parsedTransactions = storedTransactions
+        ? JSON.parse(storedTransactions)
+        : [];
+
+      // validate data is an array of transactions
+      if (Array.isArray(parsedTransactions)) {
+        setTransactions(parsedTransactions);
+      } else {
+        setTransactions([]);
+      }
+    } catch (error) {
+      console.error("Failed to retrieve transactions:", error);
+      setTransactions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getTransactions();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,28 +79,6 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        {["Today", "Week", "Month", "Year"].map((tab, index) => (
-          <TouchableOpacity
-            key={tab}
-            style={[
-              styles.tab,
-              index === 0 && styles.activeTab, // Apply active style to 'Today'
-            ]}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                index === 0 && styles.activeTabText, // Apply active text style to 'Today'
-              ]}
-            >
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
       {/* Recent Transactions */}
       <View style={styles.transactionsHeader}>
         <Text style={styles.transactionsTitle}>Recent Transaction</Text>
@@ -94,17 +88,19 @@ const HomeScreen = () => {
       </View>
 
       <FlatList
-        data={transactions}
+        data={transactions?.slice().reverse()?.slice(0, 6)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.transactionCard}>
             <Text
               style={[
                 styles.transactionIcon,
-                item.type === "Income" ? styles.incomeIcon : styles.expenseIcon,
+                item.transactionType === "income"
+                  ? styles.incomeIcon
+                  : styles.expenseIcon,
               ]}
             >
-              {item.type === "Income" ? (
+              {item.transactionType === "income" ? (
                 <Ionicons name="arrow-up" size={24} />
               ) : (
                 <Ionicons name="arrow-down" size={24} />
@@ -116,6 +112,11 @@ const HomeScreen = () => {
             </View>
           </View>
         )}
+        showsVerticalScrollIndicator={false}
+        style={{ marginBottom: 50 }}
+        ListEmptyComponent={
+          <NoTransactions filterCategory={{ label: "All", value: "" }} />
+        }
       />
     </SafeAreaView>
   );
@@ -159,22 +160,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     alignItems: "center",
   },
-  incomeText: { color: "#28a745" },
-  incomeAmount: { color: "#28a745", fontWeight: "bold", fontSize: 16 },
-  expenseText: { color: "#dc3545" },
-  expenseAmount: { color: "#dc3545", fontWeight: "bold", fontSize: 16 },
-
-  tabs: { flexDirection: "row", justifyContent: "space-around", marginTop: 20 },
-  tab: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderColor: "white", // White border to match the design
-    borderRadius: 20,
-  },
-  activeTab: { backgroundColor: "#000", borderColor: "#fff" },
-  tabText: { color: "#000", fontWeight: "bold" },
-  activeTabText: { color: "#fff" },
+  incomeText: { color: "#28a745", fontSize: 16 },
+  incomeAmount: { color: "#28a745", fontWeight: "bold", fontSize: 20 },
+  expenseText: { color: "#dc3545", fontSize: 16 },
+  expenseAmount: { color: "#dc3545", fontWeight: "bold", fontSize: 20 },
 
   transactionsHeader: {
     flexDirection: "row",
@@ -207,7 +196,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   transactionAmount: { fontWeight: "bold", fontSize: 16 },
-  transactionCategory: { color: "#888", fontSize: 12 },
+  transactionCategory: {
+    color: "purple",
+    fontSize: 14,
+    textTransform: "capitalize",
+  },
 });
 
 export default HomeScreen;

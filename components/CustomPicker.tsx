@@ -62,6 +62,9 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
           onPress={() => setIsVisible(false)}
         >
           <View style={styles.dropdown}>
+            <Text style={{ fontSize: 16, color: "#000", marginBottom: 10 }}>
+              Select category:
+            </Text>
             <FlatList
               data={options}
               keyExtractor={(item) => item.value}
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 2,
     backgroundColor: "#fff",
-    width: 120,
+    width: 'auto',
   },
   pickerText: {
     fontSize: 14,
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     width: 300,
-    maxHeight: 400,
+    maxHeight: 600,
   },
   dropdownItem: {
     padding: 10,

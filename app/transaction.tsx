@@ -1,5 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import TransactionFilter from "../components/TransactionFilter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
@@ -15,13 +21,23 @@ interface ITransaction {
   date: string;
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export default function TransactionsScreen() {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<
+    ITransaction[]
+  >([]);
   const [filterCategory, setFilterCategory] = useState<{
     label: string;
     value: string;
-  }>({ label: "All", value: "" });
+  }>({
+    label: "All",
+    value: "",
+  });
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   const getTransactions = async () => {
     try {
@@ -30,9 +46,8 @@ export default function TransactionsScreen() {
         ? JSON.parse(storedTransactions)
         : [];
 
-      // validate data is an array of transactions
       if (Array.isArray(parsedTransactions)) {
-        setTransactions(parsedTransactions);
+        setTransactions(parsedTransactions.reverse());
       } else {
         setTransactions([]);
       }
@@ -44,10 +59,43 @@ export default function TransactionsScreen() {
     }
   };
 
+  const applyFilter = () => {
+    if (filterCategory.value !== "") {
+      const filtered = transactions.filter(
+        (transaction) =>
+          transaction.category.toLocaleLowerCase() ===
+          filterCategory.value.toLocaleLowerCase()
+      );
+      setFilteredTransactions(filtered);
+    } else {
+      setFilteredTransactions(transactions);
+    }
+  };
+
+  const loadMoreTransactions = () => {
+    if (
+      loadingMore ||
+      currentPage * ITEMS_PER_PAGE >= filteredTransactions.length
+    )
+      return;
+
+    setLoadingMore(true);
+    setTimeout(() => {
+      setCurrentPage((prevPage) => prevPage + 1);
+      setLoadingMore(false);
+    }, 500); // Simulate network delay
+  };
+
   useFocusEffect(
     useCallback(() => {
       getTransactions();
     }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      applyFilter();
+    }, [transactions, filterCategory])
   );
 
   const renderTransaction = ({ item }: { item: (typeof transactions)[0] }) => (
@@ -63,11 +111,16 @@ export default function TransactionsScreen() {
             item.transactionType === "income" ? styles.income : styles.expense,
           ]}
         >
-          {`${item.transactionType === "income" ? "+" : "-"}` + item.amount}
+          {`${item.transactionType === "income" ? "+" : "-"}` + item.amount} BDT
         </Text>
         <Text style={styles.time}>{moment(item.date).format("DD MMM LT")}</Text>
       </View>
     </View>
+  );
+
+  const paginatedTransactions = filteredTransactions.slice(
+    0,
+    currentPage * ITEMS_PER_PAGE
   );
 
   return (
@@ -85,22 +138,22 @@ export default function TransactionsScreen() {
 
       {/* Transaction List */}
       <FlatList
-        data={
-          filterCategory.value !== ""
-            ? transactions
-                ?.slice()
-                ?.reverse()
-                ?.filter(
-                  (transaction) =>
-                    transaction.category.toLocaleLowerCase() ===
-                    filterCategory.value.toLocaleLowerCase()
-                )
-            : transactions
-        }
+        data={paginatedTransactions}
         renderItem={renderTransaction}
         keyExtractor={(item, index) => item.id || index.toString()}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        onEndReached={loadMoreTransactions}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          loadingMore ? (
+            <ActivityIndicator
+              size="large"
+              color="purple"
+              style={styles.loadingMore}
+            />
+          ) : null
+        }
         ListEmptyComponent={<NoTransactions filterCategory={filterCategory} />}
       />
     </View>
@@ -171,5 +224,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#888",
     marginTop: 4,
+  },
+  loadingMore: {
+    marginVertical: 16,
   },
 });
