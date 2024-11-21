@@ -24,7 +24,7 @@ const NoTransactions = ({
           onPress={() => router.push("/add")}
         >
           <Text style={{ color: "#fff", fontSize: 16, textAlign: "center" }}>
-            Create Transaction
+            Add Transaction
           </Text>
         </TouchableOpacity>
       )}
