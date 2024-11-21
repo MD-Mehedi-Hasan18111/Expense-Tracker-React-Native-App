@@ -50,12 +50,30 @@ export default function RootLayout() {
       <Tabs.Screen
         name="add"
         options={{
-          tabBarButton: () => (
+          tabBarButton: ({ accessibilityState }) => (
             <TouchableOpacity
-              style={styles.addButton}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: accessibilityState?.selected
+                  ? "purple"
+                  : "#fff",
+                borderWidth: accessibilityState?.selected ? 0 : 1,
+                borderColor: accessibilityState?.selected ? "" : "purple",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "absolute",
+                left: 15,
+                top: -30, // Floating above the tab bar
+              }}
               onPress={() => router.push("/add")}
             >
-              <Ionicons name="add" size={32} color="white" />
+              <Ionicons
+                name="add"
+                size={32}
+                color={accessibilityState?.selected ? "white" : "purple"}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -112,16 +130,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 10,
-  },
-  addButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "purple",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    left: 15,
-    top: -30, // Floating above the tab bar
-  },
+  }
 });

@@ -2,9 +2,24 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import CustomPicker from "./CustomPicker";
 
-const TransactionFilter = () => {
-  const [selectedMonth, setSelectedMonth] = useState("Month");
-  const [selectedFilter, setSelectedFilter] = useState("All");
+interface IComponentProps {
+  selectedFilter: {
+    label: string;
+    value: string;
+  };
+  setSelectedFilter: React.Dispatch<
+    React.SetStateAction<{
+      label: string;
+      value: string;
+    }>
+  >;
+}
+
+const TransactionFilter: React.FC<IComponentProps> = ({
+  selectedFilter,
+  setSelectedFilter,
+}) => {
+  // const [selectedFilter, setSelectedFilter] = useState("All");
 
   const monthOptions = [
     { label: "January", value: "jan" },
@@ -14,7 +29,7 @@ const TransactionFilter = () => {
   ];
 
   const filterOptions = [
-    { label: "All", value: "all" },
+    { label: "All", value: "" },
     { label: "Food", value: "food" },
     { label: "Salary", value: "salary" },
     { label: "Subscription", value: "subscription" },
@@ -29,12 +44,16 @@ const TransactionFilter = () => {
         selectedValue={selectedMonth}
         onValueChange={(value) => setSelectedMonth(value)}
       /> */}
-      <View style={{ flexDirection: "row", alignItems: 'center', columnGap: 3 }}>
-        <Text style={{ fontSize: 16, fontWeight: 500 }}>Filter by Category: </Text>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", columnGap: 3 }}
+      >
+        <Text style={{ fontSize: 16, fontWeight: 500 }}>
+          Filter by Category:{" "}
+        </Text>
         <CustomPicker
           options={filterOptions}
           selectedValue={selectedFilter}
-          onValueChange={(value) => setSelectedFilter(value)}
+          onValueChange={setSelectedFilter}
         />
       </View>
     </View>

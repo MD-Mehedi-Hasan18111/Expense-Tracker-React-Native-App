@@ -2,7 +2,11 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const NoTransactions = () => {
+const NoTransactions = ({
+  filterCategory,
+}: {
+  filterCategory: { label: string; value: string };
+}) => {
   const router = useRouter();
   return (
     <View style={styles.container}>
@@ -10,15 +14,20 @@ const NoTransactions = () => {
         source={{ uri: "https://i.ibb.co.com/1nBTYTq/no-transaction.png" }}
         style={styles.image}
       />
-      <Text style={styles.text}>No Transactions Available</Text>
-      <TouchableOpacity
-        style={styles.transactionCreateBtn}
-        onPress={() => router.push("/add")}
-      >
-        <Text style={{ color: "#fff", fontSize: 16, textAlign: "center" }}>
-          Create Transaction
-        </Text>
-      </TouchableOpacity>
+      <Text style={styles.text}>
+        No Transactions{" "}
+        {filterCategory.value ? `for ${filterCategory.label}` : "Available"}
+      </Text>
+      {filterCategory.value === "" && (
+        <TouchableOpacity
+          style={styles.transactionCreateBtn}
+          onPress={() => router.push("/add")}
+        >
+          <Text style={{ color: "#fff", fontSize: 16, textAlign: "center" }}>
+            Create Transaction
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -38,7 +47,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#000",
     textAlign: "center",

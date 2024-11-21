@@ -17,6 +17,10 @@ interface ITransaction {
 
 export default function TransactionsScreen() {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [filterCategory, setFilterCategory] = useState<{
+    label: string;
+    value: string;
+  }>({ label: "All", value: "" });
   const [loading, setLoading] = useState<boolean>(true);
 
   const getTransactions = async () => {
@@ -61,9 +65,7 @@ export default function TransactionsScreen() {
         >
           {`${item.transactionType === "income" ? "+" : "-"}` + item.amount}
         </Text>
-        <Text style={styles.time}>
-          {moment(item.date).format("DD MMM YYYY")}
-        </Text>
+        <Text style={styles.time}>{moment(item.date).format("DD MMM LT")}</Text>
       </View>
     </View>
   );
@@ -76,16 +78,30 @@ export default function TransactionsScreen() {
       </View>
 
       {/* Filters */}
-      <TransactionFilter />
+      <TransactionFilter
+        selectedFilter={filterCategory}
+        setSelectedFilter={setFilterCategory}
+      />
 
       {/* Transaction List */}
       <FlatList
-        data={transactions}
+        data={
+          filterCategory.value !== ""
+            ? transactions
+                ?.slice()
+                ?.reverse()
+                ?.filter(
+                  (transaction) =>
+                    transaction.category.toLocaleLowerCase() ===
+                    filterCategory.value.toLocaleLowerCase()
+                )
+            : transactions
+        }
         renderItem={renderTransaction}
         keyExtractor={(item, index) => item.id || index.toString()}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={<NoTransactions />}
+        ListEmptyComponent={<NoTransactions filterCategory={filterCategory} />}
       />
     </View>
   );
@@ -134,7 +150,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 12,
-    color: "#888",
+    color: "purple",
     marginTop: 4,
     textTransform: "capitalize",
   },

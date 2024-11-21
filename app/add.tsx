@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
   TextInput,
   View,
   TouchableOpacity,
   Platform,
-  FlatList,
   Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
 
 interface ITransaction {
   id: string;
@@ -28,24 +27,12 @@ const AddScreen = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [transactionType, setTransactionType] = useState("expense");
-  const [date, setDate] = useState("");
-  const [showPicker, setShowPicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
-
-  const handleDateChange = (event: any, newDate: any) => {
-    setShowPicker(false);
-    if (newDate) {
-      setSelectedDate(newDate);
-      const formattedDate = newDate.toISOString().split("T")[0];
-      setDate(formattedDate);
-    }
-  };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // Function to handle saving transaction to AsyncStorage
   const handleSaveTransaction = async () => {
-    if (!amount || !category || !description || !date) {
+    if (!amount || !category || !description) {
       Alert.alert("Please fill all fields.");
       return;
     }
@@ -56,7 +43,7 @@ const AddScreen = () => {
       category,
       description,
       transactionType,
-      date,
+      date: moment().format(),
     };
 
     try {
@@ -84,7 +71,7 @@ const AddScreen = () => {
       setCategory("");
       setDescription("");
       setTransactionType("expense");
-      setDate("");
+      // setDate("");
 
       // Retrieve the latest transactions and update state
       setTransactions(updatedTransactions);
@@ -202,30 +189,6 @@ const AddScreen = () => {
             <Text style={{ color: "#fff", textAlign: "center" }}>Income</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          onPress={() => setShowPicker(true)}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 10,
-            borderRadius: 5,
-            marginBottom: 20,
-          }}
-        >
-          <Text style={{ color: date ? "#000" : "#888" }}>
-            {date || "Enter Date (YYYY-MM-DD)"}
-          </Text>
-        </TouchableOpacity>
-
-        {showPicker && (
-          <DateTimePicker
-            value={selectedDate}
-            mode="date"
-            display={Platform.OS === "ios" ? "inline" : "calendar"}
-            onChange={handleDateChange}
-          />
-        )}
 
         <TouchableOpacity
           style={{

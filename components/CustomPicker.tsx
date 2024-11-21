@@ -16,8 +16,16 @@ type Option = {
 
 type CustomPickerProps = {
   options: Option[];
-  selectedValue: string;
-  onValueChange: (value: string) => void;
+  selectedValue: {
+    label: string;
+    value: string;
+  };
+  onValueChange: React.Dispatch<
+    React.SetStateAction<{
+      label: string;
+      value: string;
+    }>
+  >;
 };
 
 const CustomPicker: React.FC<CustomPickerProps> = ({
@@ -27,8 +35,8 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const handleSelect = (value: string) => {
-    onValueChange(value);
+  const handleSelect = (option: { label: string; value: string }) => {
+    onValueChange(option);
     setIsVisible(false);
   };
 
@@ -38,7 +46,7 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
         style={styles.pickerContainer}
         onPress={() => setIsVisible(true)}
       >
-        <Text style={styles.pickerText}>{selectedValue}</Text>
+        <Text style={styles.pickerText}>{selectedValue.label}</Text>
         <MaterialIcons name="arrow-drop-down" size={20} color="#9C27B0" />
       </TouchableOpacity>
 
@@ -60,7 +68,7 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.dropdownItem}
-                  onPress={() => handleSelect(item.label)}
+                  onPress={() => handleSelect(item)}
                 >
                   <Text style={styles.itemText}>{item.label}</Text>
                 </TouchableOpacity>
@@ -108,7 +116,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#8e44ad",
     marginVertical: 4,
-    borderRadius: 10
+    borderRadius: 10,
   },
   itemText: {
     fontSize: 16,
