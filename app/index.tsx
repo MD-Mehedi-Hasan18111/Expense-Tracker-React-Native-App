@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,9 +8,11 @@ import {
   FlatList,
   StyleSheet,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import NoTransactions from "../components/NoTransaction";
+import moment from "moment";
 
 interface ITransaction {
   id: string;
@@ -52,29 +54,68 @@ const HomeScreen = () => {
     }, [])
   );
 
+  // Time
+  const [currentTime, setCurrentTime] = useState(
+    moment().format("dddd DD MMM YYYY, h:mm a")
+  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(moment().format("dddd DD MMM YYYY, h:mm:ss a"));
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  // Calculate Income and Expenses totals
+  const incomeTotal = transactions
+    .filter((transaction) => transaction.transactionType === "income")
+    .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+  const expensesTotal = transactions
+    .filter((transaction) => transaction.transactionType === "expense")
+    .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+  // Helper function to format numbers with commas
+  const formatNumberWithCommas = (num: number): string => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  // const clearAllTransactions = async () => {
+  //   try {
+  //     await AsyncStorage.removeItem("transactions");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   clearAllTransactions();
+  // }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.date}>MONDAY 9 NOVEMBER 2024</Text>
+          <Text style={styles.date}>{currentTime}</Text>
         </View>
       </View>
 
       {/* Account Balance */}
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceLabel}>Account Balance</Text>
-        <Text style={styles.balance}>9400.0 BDT</Text>
+        <Text style={styles.balance}>00.0 BDT</Text>
 
         <View style={styles.incomeExpense}>
           <TouchableOpacity style={styles.incomeBox}>
             <Text style={styles.incomeText}>Income</Text>
-            <Text style={styles.incomeAmount}>25000 BDT</Text>
+            <Text style={styles.incomeAmount}>
+              {formatNumberWithCommas(incomeTotal)} BDT
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.expenseBox}>
             <Text style={styles.expenseText}>Expenses</Text>
-            <Text style={styles.expenseAmount}>11200 BDT</Text>
+            <Text style={styles.expenseAmount}>
+              {formatNumberWithCommas(expensesTotal)} BDT
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -90,6 +131,15 @@ const HomeScreen = () => {
       <FlatList
         data={transactions?.slice().reverse()?.slice(0, 6)}
         keyExtractor={(item) => item.id}
+        ListFooterComponent={
+          loading ? (
+            <ActivityIndicator
+              size="large"
+              color="purple"
+              style={{ marginVertical: 20 }}
+            />
+          ) : null
+        }
         renderItem={({ item }) => (
           <View style={styles.transactionCard}>
             <Text
@@ -130,14 +180,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  date: { fontSize: 12, color: "#888" },
+  date: { fontSize: 12, color: "purple" },
   profileContainer: { flexDirection: "row", alignItems: "center" },
   profileImage: { width: 40, height: 40, borderRadius: 20 },
   username: { fontSize: 16, marginLeft: 8 },
 
-  balanceContainer: { marginTop: 16, alignItems: "center" },
+  balanceContainer: { marginTop: 20, alignItems: "center" },
   balanceLabel: { fontSize: 14, color: "#000" },
-  balance: { fontSize: 32, fontWeight: "bold", marginVertical: 8 },
+  balance: { fontSize: 32, fontWeight: "bold", marginVertical: 4 },
   incomeExpense: {
     flexDirection: "row",
     justifyContent: "space-between",
