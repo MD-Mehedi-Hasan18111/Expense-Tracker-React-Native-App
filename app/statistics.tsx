@@ -1,7 +1,16 @@
 import React from "react";
-import { Text, View, FlatList, Dimensions, Image } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  Dimensions,
+  Image,
+  SafeAreaView,
+} from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { useTransactions } from "../hooks/useTransactions";
+import { StyleSheet } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 interface ITransaction {
   id: string;
@@ -75,25 +84,50 @@ const StatisticsScreen = () => {
   }));
 
   const renderStatistics = ({ item }: { item: (typeof chartData)[0] }) => (
-    <View style={{ padding: 10, borderBottomWidth: 1, borderColor: "#ccc" }}>
+    <SafeAreaView
+      style={{
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: "#ccc",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <View>
+        <Text
+          style={{
+            fontSize: 16,
+            color: "purple",
+            fontWeight: "bold",
+            textTransform: "capitalize",
+          }}
+        >
+          {item.name}
+        </Text>
+        <Text style={{ textTransform: "capitalize" }}>
+          <Text style={{ fontWeight: 600 }}>Transaction Type:</Text>{" "}
+          {item.transactionType}
+        </Text>
+        <Text>
+          Total Balance: {formatNumberWithCommas(Number(item.amount))} BDT
+        </Text>
+      </View>
       <Text
-        style={{
-          fontSize: 16,
-          color: "purple",
-          fontWeight: "bold",
-          textTransform: "capitalize",
-        }}
+        style={[
+          styles.transactionIcon,
+          item.transactionType === "income"
+            ? styles.incomeIcon
+            : styles.expenseIcon,
+        ]}
       >
-        {item.name}
+        {item.transactionType === "income" ? (
+          <Ionicons name="arrow-up" size={24} />
+        ) : (
+          <Ionicons name="arrow-down" size={24} />
+        )}
       </Text>
-      <Text style={{ textTransform: "capitalize" }}>
-        <Text style={{ fontWeight: 600 }}>Transaction Type:</Text>{" "}
-        {item.transactionType}
-      </Text>
-      <Text>
-        Total Balance: {formatNumberWithCommas(Number(item.amount))} BDT
-      </Text>
-    </View>
+    </SafeAreaView>
   );
 
   return (
@@ -118,7 +152,12 @@ const StatisticsScreen = () => {
       {/* When no statistics available */}
       {chartData?.length === 0 && (
         <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 150 }}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 150,
+          }}
         >
           <Image
             source={{ uri: "https://i.ibb.co.com/sKkxcGp/no-statistics.png" }}
@@ -141,9 +180,10 @@ const StatisticsScreen = () => {
           color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
         }}
         accessor={"amount"}
-        backgroundColor={"transparent"}
-        paddingLeft={"15"}
-        center={[10, 0]}
+        backgroundColor={"#fff"}
+        paddingLeft={"10"}
+        center={[5, 0]}
+        style={{ borderRadius: 15 }}
       />
 
       {/* Statistics List */}
@@ -160,3 +200,19 @@ const StatisticsScreen = () => {
 };
 
 export default StatisticsScreen;
+
+const styles = StyleSheet.create({
+  transactionIcon: { marginRight: 16 },
+  incomeIcon: {
+    backgroundColor: "#28a745",
+    color: "#fff",
+    padding: 4,
+    borderRadius: 100,
+  },
+  expenseIcon: {
+    backgroundColor: "#dc3545",
+    color: "#fff",
+    padding: 4,
+    borderRadius: 100,
+  },
+});
