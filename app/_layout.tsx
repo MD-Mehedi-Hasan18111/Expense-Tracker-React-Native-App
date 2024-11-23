@@ -4,6 +4,7 @@ import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { TransactionsProvider } from "../hooks/useTransactions";
 import { useNavigationState } from "@react-navigation/native";
+import { CurrencyProvider } from "../hooks/useCurrency";
 
 export default function RootLayout() {
   const router = useRouter();
@@ -28,119 +29,129 @@ export default function RootLayout() {
   }
 
   const routeName = useActiveRouteName();
-  const hideTabScreens = ["manage-transaction"];
+  const hideTabScreens = ["currency-setting", "manage-transaction"];
 
   return (
     <TransactionsProvider>
-      <Tabs
-        screenOptions={{
-          tabBarShowLabel: true,
-          tabBarStyle: hideTabScreens.includes(routeName)
-            ? styles.hideTab
-            : styles.tabBar,
-          headerShown: false,
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            tabBarLabel: ({ focused, color }) => (
-              <Text style={{ color: focused ? "purple" : color, fontSize: 12 }}>
-                Home
-              </Text>
-            ),
-            tabBarIcon: ({ focused, color }) => (
-              <Ionicons
-                name="home"
-                size={24}
-                color={focused ? "purple" : color}
-              />
-            ),
+      <CurrencyProvider>
+        <Tabs
+          screenOptions={{
+            tabBarShowLabel: true,
+            tabBarStyle: hideTabScreens.includes(routeName)
+              ? styles.hideTab
+              : styles.tabBar,
+            headerShown: false,
           }}
-        />
-        <Tabs.Screen
-          name="transaction"
-          options={{
-            tabBarLabel: ({ focused, color }) => (
-              <Text style={{ color: focused ? "purple" : color, fontSize: 12 }}>
-                Transaction
-              </Text>
-            ),
-            tabBarIcon: ({ focused, color }) => (
-              <Ionicons
-                name="swap-horizontal"
-                size={24}
-                color={focused ? "purple" : color}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="add"
-          options={{
-            tabBarButton: ({ accessibilityState }) => (
-              <TouchableOpacity
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 30,
-                  backgroundColor: accessibilityState?.selected
-                    ? "purple"
-                    : "#fff",
-                  borderWidth: accessibilityState?.selected ? 0 : 1,
-                  borderColor: accessibilityState?.selected ? "" : "purple",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-                  left: 15,
-                  top: -30, // Floating above the tab bar
-                }}
-                onPress={() => router.push("/add")}
-              >
+        >
+          <Tabs.Screen
+            name="index"
+            options={{
+              tabBarLabel: ({ focused, color }) => (
+                <Text
+                  style={{ color: focused ? "purple" : color, fontSize: 12 }}
+                >
+                  Home
+                </Text>
+              ),
+              tabBarIcon: ({ focused, color }) => (
                 <Ionicons
-                  name="add"
-                  size={32}
-                  color={accessibilityState?.selected ? "white" : "purple"}
+                  name="home"
+                  size={24}
+                  color={focused ? "purple" : color}
                 />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="statistics"
-          options={{
-            tabBarLabel: ({ focused, color }) => (
-              <Text style={{ color: focused ? "purple" : color, fontSize: 12 }}>
-                Statistics
-              </Text>
-            ),
-            tabBarIcon: ({ focused, color }) => (
-              <Ionicons
-                name="pie-chart"
-                size={24}
-                color={focused ? "purple" : color}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            tabBarLabel: ({ focused, color }) => (
-              <Text style={{ color: focused ? "purple" : color, fontSize: 12 }}>
-                Settings
-              </Text>
-            ),
-            tabBarIcon: ({ focused, color }) => (
-              <Ionicons
-                name="settings"
-                size={24}
-                color={focused ? "purple" : color}
-              />
-            ),
-          }}
-        />
-      </Tabs>
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="transaction"
+            options={{
+              tabBarLabel: ({ focused, color }) => (
+                <Text
+                  style={{ color: focused ? "purple" : color, fontSize: 12 }}
+                >
+                  Transaction
+                </Text>
+              ),
+              tabBarIcon: ({ focused, color }) => (
+                <Ionicons
+                  name="swap-horizontal"
+                  size={24}
+                  color={focused ? "purple" : color}
+                />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="add"
+            options={{
+              tabBarButton: ({ accessibilityState }) => (
+                <TouchableOpacity
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    backgroundColor: accessibilityState?.selected
+                      ? "purple"
+                      : "#fff",
+                    borderWidth: accessibilityState?.selected ? 0 : 1,
+                    borderColor: accessibilityState?.selected ? "" : "purple",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "absolute",
+                    left: 15,
+                    top: -30, // Floating above the tab bar
+                  }}
+                  onPress={() => router.push("/add")}
+                >
+                  <Ionicons
+                    name="add"
+                    size={32}
+                    color={accessibilityState?.selected ? "white" : "purple"}
+                  />
+                </TouchableOpacity>
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="statistics"
+            options={{
+              tabBarLabel: ({ focused, color }) => (
+                <Text
+                  style={{ color: focused ? "purple" : color, fontSize: 12 }}
+                >
+                  Statistics
+                </Text>
+              ),
+              tabBarIcon: ({ focused, color }) => (
+                <Ionicons
+                  name="pie-chart"
+                  size={24}
+                  color={focused ? "purple" : color}
+                />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="settings"
+            options={{
+              tabBarLabel: ({ focused, color }) => (
+                <Text
+                  style={{ color: focused ? "purple" : color, fontSize: 12 }}
+                >
+                  Settings
+                </Text>
+              ),
+              tabBarIcon: ({ focused, color }) => (
+                <Ionicons
+                  name="settings"
+                  size={24}
+                  color={focused ? "purple" : color}
+                />
+              ),
+            }}
+          />
+        </Tabs>
+      </CurrencyProvider>
     </TransactionsProvider>
   );
 }

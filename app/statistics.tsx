@@ -11,6 +11,7 @@ import { PieChart } from "react-native-chart-kit";
 import { useTransactions } from "../hooks/useTransactions";
 import { StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useCurrency } from "../hooks/useCurrency";
 
 interface ITransaction {
   id: string;
@@ -53,7 +54,7 @@ const formatNumberWithCommas = (num: number): string => {
 
 const StatisticsScreen = () => {
   const screenWidth = Dimensions.get("window").width;
-
+  const { currency } = useCurrency();
   const { transactions } = useTransactions();
 
   const processDataForChart = (transactions: ITransaction[]) => {
@@ -110,7 +111,8 @@ const StatisticsScreen = () => {
           {item.transactionType}
         </Text>
         <Text>
-          Total Balance: {formatNumberWithCommas(Number(item.amount))} BDT
+          Total Balance: {formatNumberWithCommas(Number(item.amount))}{" "}
+          {currency}
         </Text>
       </View>
       <Text

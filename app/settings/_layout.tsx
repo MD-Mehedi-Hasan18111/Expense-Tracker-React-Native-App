@@ -6,11 +6,15 @@ export default function SettingsLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: "Settings", headerShown: false }}
+        options={{ title: "Settings", headerShadowVisible: false }}
+      />
+      <Stack.Screen
+        name="currency-setting"
+        options={{ title: "Currency Settings", headerShadowVisible: false }}
       />
       <Stack.Screen
         name="manage-transaction"
-        options={{ title: "Manage Transaction" }}
+        options={{ title: "Manage Transaction", headerShadowVisible: false }}
       />
     </Stack>
   );

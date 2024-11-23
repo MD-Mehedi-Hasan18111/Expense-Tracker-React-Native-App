@@ -12,6 +12,7 @@ import { useFocusEffect } from "expo-router";
 import NoTransactions from "../components/NoTransaction";
 import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
+import { useCurrency } from "../hooks/useCurrency";
 
 interface ITransaction {
   id: string;
@@ -25,7 +26,7 @@ interface ITransaction {
 const ITEMS_PER_PAGE = 10;
 
 export default function TransactionsScreen() {
-  // const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const { currency } = useCurrency();
   const { transactions, setTransactions } = useTransactions();
   const [filteredTransactions, setFilteredTransactions] = useState<
     ITransaction[]
@@ -131,7 +132,7 @@ export default function TransactionsScreen() {
         >
           {`${item.transactionType === "income" ? "+" : "-"}` +
             formatNumberWithCommas(Number(item.amount))}{" "}
-          BDT
+          {currency}
         </Text>
         <Text style={styles.time}>{moment(item.date).format("DD MMM LT")}</Text>
       </View>

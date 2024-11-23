@@ -14,6 +14,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import NoTransactions from "../components/NoTransaction";
 import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
+import { getCurrency } from "../utils/settings";
+import { useCurrency } from "../hooks/useCurrency";
 
 interface ITransaction {
   id: string;
@@ -26,7 +28,8 @@ interface ITransaction {
 
 const HomeScreen = () => {
   const router = useRouter();
-  // const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const { currency } = useCurrency();
+
   const { transactions, setTransactions } = useTransactions();
   const [loading, setLoading] = useState<boolean>(true);
   const getTransactions = async () => {
@@ -116,21 +119,21 @@ const HomeScreen = () => {
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceLabel}>Account Balance</Text>
         <Text style={styles.balance}>
-          {formatNumberWithCommas(incomeTotal - expensesTotal)} BDT
+          {formatNumberWithCommas(incomeTotal - expensesTotal)} {currency}
         </Text>
 
         <View style={styles.incomeExpense}>
           <TouchableOpacity style={styles.incomeBox}>
             <Text style={styles.incomeText}>Income</Text>
             <Text style={styles.incomeAmount}>
-              {formatNumberWithCommas(incomeTotal)} BDT
+              {formatNumberWithCommas(incomeTotal)} {currency}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.expenseBox}>
             <Text style={styles.expenseText}>Expenses</Text>
             <Text style={styles.expenseAmount}>
-              {formatNumberWithCommas(expensesTotal)} BDT
+              {formatNumberWithCommas(expensesTotal)} {currency}
             </Text>
           </TouchableOpacity>
         </View>
@@ -174,7 +177,7 @@ const HomeScreen = () => {
             </Text>
             <View>
               <Text style={styles.transactionAmount}>
-                {formatNumberWithCommas(Number(item.amount))} BDT
+                {formatNumberWithCommas(Number(item.amount))} {currency}
               </Text>
               <Text style={styles.transactionCategory}>{item.category}</Text>
             </View>
