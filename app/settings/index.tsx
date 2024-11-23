@@ -1,7 +1,9 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 
 const SettingsScreen = () => {
+  const router = useRouter();
   return (
     <View
       style={{
@@ -11,6 +13,10 @@ const SettingsScreen = () => {
       }}
     >
       <Text>This is Settings Screen.</Text>
+      <Button
+        title="Manage Transaction"
+        onPress={() => router.push("/settings/manage-transaction")}
+      />
     </View>
   );
 };

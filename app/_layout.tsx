@@ -3,15 +3,41 @@ import { Tabs, useRouter } from "expo-router";
 import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { TransactionsProvider } from "../hooks/useTransactions";
+import { useNavigationState } from "@react-navigation/native";
 
 export default function RootLayout() {
   const router = useRouter();
+
+  function useActiveRouteName() {
+    const state = useNavigationState((state) => state);
+
+    const getActiveRoute = (state) => {
+      if (!state || !state.routes || state.index === undefined) return null;
+
+      const route = state.routes[state.index];
+
+      // If the route has nested state, recurse to find the active child
+      if (route.state) {
+        return getActiveRoute(route.state);
+      }
+
+      return route.name; // Return the active route name
+    };
+
+    return getActiveRoute(state);
+  }
+
+  const routeName = useActiveRouteName();
+  const hideTabScreens = ["manage-transaction"];
+
   return (
     <TransactionsProvider>
       <Tabs
         screenOptions={{
           tabBarShowLabel: true,
-          tabBarStyle: styles.tabBar,
+          tabBarStyle: hideTabScreens.includes(routeName)
+            ? styles.hideTab
+            : styles.tabBar,
           headerShown: false,
         }}
       >
@@ -133,5 +159,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 10,
+  },
+  hideTab: {
+    display: "none",
   },
 });
