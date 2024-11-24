@@ -147,7 +147,9 @@ const StatisticsScreen = () => {
             marginBottom: 10,
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: primaryColor }}>
+          <Text
+            style={{ fontSize: 20, fontWeight: "bold", color: primaryColor }}
+          >
             Statistics
           </Text>
         </View>
@@ -176,19 +178,21 @@ const StatisticsScreen = () => {
       )}
 
       {/* Pie Chart */}
-      <PieChart
-        data={finalChartData}
-        width={screenWidth - 40} // Adjust width for padding
-        height={220}
-        chartConfig={{
-          color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-        }}
-        accessor={"amount"}
-        backgroundColor={"#fff"}
-        paddingLeft={"10"}
-        center={[5, 0]}
-        style={{ borderRadius: 15 }}
-      />
+      {chartData?.length !== 0 && (
+        <PieChart
+          data={finalChartData}
+          width={screenWidth - 40} // Adjust width for padding
+          height={220}
+          chartConfig={{
+            color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+          }}
+          accessor={"amount"}
+          backgroundColor={"#fff"}
+          paddingLeft={"10"}
+          center={[5, 0]}
+          style={{ borderRadius: 15 }}
+        />
+      )}
 
       {/* Statistics List */}
       <FlatList

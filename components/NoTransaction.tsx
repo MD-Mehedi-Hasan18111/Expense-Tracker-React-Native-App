@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "../hooks/useTheme";
 
 const NoTransactions = ({
   filterCategory,
@@ -8,6 +9,7 @@ const NoTransactions = ({
   filterCategory: { label: string; value: string };
 }) => {
   const router = useRouter();
+  const { primaryColor } = useTheme();
   return (
     <View style={styles.container}>
       <Image
@@ -20,7 +22,10 @@ const NoTransactions = ({
       </Text>
       {filterCategory.value === "" && (
         <TouchableOpacity
-          style={styles.transactionCreateBtn}
+          style={[
+            styles.transactionCreateBtn,
+            { backgroundColor: primaryColor },
+          ]}
           onPress={() => router.push("/add")}
         >
           <Text style={{ color: "#fff", fontSize: 16, textAlign: "center" }}>
@@ -53,7 +58,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   transactionCreateBtn: {
-    backgroundColor: "purple",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 100,

@@ -44,28 +44,16 @@ const groupedSettings = [
         icon: "donut-large" as const,
         route: "/settings/budget",
       },
-      {
-        id: "5",
-        title: "Recurring Transactions",
-        icon: "autorenew" as const,
-        route: "/settings/recurring-transaction",
-      },
     ],
   },
   {
     sectionTitle: "Data Management",
     data: [
       {
-        id: "6",
-        title: "Backup & Restore",
-        icon: "backup" as const,
-        route: "/settings/backup",
-      },
-      {
-        id: "7",
+        id: "5",
         title: "Reset Data",
         icon: "restore" as const,
-        route: "/settings/reset",
+        route: "/settings/reset-data",
       },
     ],
   },

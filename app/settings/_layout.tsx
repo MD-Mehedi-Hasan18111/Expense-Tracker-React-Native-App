@@ -20,6 +20,10 @@ export default function SettingsLayout() {
         name="manage-transaction"
         options={{ title: "Manage Transaction", headerShadowVisible: false }}
       />
+      <Stack.Screen
+        name="reset-data"
+        options={{ title: "Reset Data", headerShadowVisible: false }}
+      />
     </Stack>
   );
 }

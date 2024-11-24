@@ -8,6 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons"; // For dropdown icon
+import { useTheme } from "../hooks/useTheme";
 
 type Option = {
   label: string;
@@ -35,6 +36,8 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
+  const { primaryColor } = useTheme();
+
   const handleSelect = (option: { label: string; value: string }) => {
     onValueChange(option);
     setIsVisible(false);
@@ -43,11 +46,11 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
   return (
     <View>
       <TouchableOpacity
-        style={styles.pickerContainer}
+        style={[styles.pickerContainer, { borderColor: primaryColor }]}
         onPress={() => setIsVisible(true)}
       >
         <Text style={styles.pickerText}>{selectedValue.label}</Text>
-        <MaterialIcons name="arrow-drop-down" size={20} color="#9C27B0" />
+        <MaterialIcons name="arrow-drop-down" size={20} color={primaryColor} />
       </TouchableOpacity>
 
       {/* Modal for dropdown */}
@@ -70,7 +73,10 @@ const CustomPicker: React.FC<CustomPickerProps> = ({
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={styles.dropdownItem}
+                  style={[
+                    styles.dropdownItem,
+                    { backgroundColor: primaryColor },
+                  ]}
                   onPress={() => handleSelect(item)}
                 >
                   <Text style={styles.itemText}>{item.label}</Text>
@@ -90,12 +96,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 0.5,
-    borderColor: "purple",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 2,
     backgroundColor: "#fff",
-    width: 'auto',
+    width: "auto",
   },
   pickerText: {
     fontSize: 14,
@@ -117,7 +122,7 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     padding: 10,
-    backgroundColor: "#8e44ad",
+    // backgroundColor: "#8e44ad",
     marginVertical: 4,
     borderRadius: 10,
   },
