@@ -13,6 +13,10 @@ export default function SettingsLayout() {
         options={{ title: "Currency Settings", headerShadowVisible: false }}
       />
       <Stack.Screen
+        name="appearance"
+        options={{ title: "Appearance", headerShadowVisible: false }}
+      />
+      <Stack.Screen
         name="manage-transaction"
         options={{ title: "Manage Transaction", headerShadowVisible: false }}
       />

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useTheme } from "../../hooks/useTheme";
 
 const groupedSettings = [
   {
@@ -73,6 +74,8 @@ const groupedSettings = [
 const SettingsScreen = () => {
   const router = useRouter();
 
+  const { primaryColor, secondaryColor } = useTheme();
+
   const renderItem = ({
     item,
   }: {
@@ -83,8 +86,8 @@ const SettingsScreen = () => {
       onPress={() => router.push(item.route)}
       activeOpacity={0.7}
     >
-      <View style={styles.iconWrapper}>
-        <MaterialIcons name={item.icon} size={28} color="purple" />
+      <View style={[styles.iconWrapper, { backgroundColor: secondaryColor }]}>
+        <MaterialIcons name={item.icon} size={28} color={primaryColor} />
       </View>
       <Text style={styles.optionText}>{item.title}</Text>
       <MaterialIcons name="chevron-right" size={24} color="#aaa" />
@@ -98,7 +101,9 @@ const SettingsScreen = () => {
         keyExtractor={(section) => section.sectionTitle}
         renderItem={({ item: section }) => (
           <View>
-            <Text style={styles.sectionTitle}>{section.sectionTitle}</Text>
+            <Text style={[styles.sectionTitle, { color: primaryColor }]}>
+              {section.sectionTitle}
+            </Text>
             <FlatList
               data={section.data}
               keyExtractor={(item) => item.id}
@@ -128,7 +133,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 20,
     marginBottom: 10,
-    color: "purple",
   },
   sectionContent: {
     paddingBottom: 10,
@@ -151,7 +155,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(128, 0, 128, 0.1)", // Purple with 30% opacity
     justifyContent: "center",
     alignItems: "center",
     marginRight: 15,

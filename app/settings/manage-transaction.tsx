@@ -12,6 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTransactions } from "../../hooks/useTransactions";
 import { useCurrency } from "../../hooks/useCurrency";
+import { useTheme } from "../../hooks/useTheme";
 
 const TRANSACTIONS_KEY = "transactions";
 const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
@@ -93,7 +94,7 @@ const ManageTransactionScreen = () => {
   const renderItem = ({ item }: { item: ITransaction }) => (
     <View style={styles.transactionCard}>
       <View style={styles.transactionDetails}>
-        <Text style={styles.transactionCategory}>{item.category}</Text>
+        <Text style={[styles.transactionCategory, {color: primaryColor}]}>{item.category}</Text>
         <Text style={styles.transactionDescription}>{item.description}</Text>
         <Text
           style={[
@@ -118,6 +119,8 @@ const ManageTransactionScreen = () => {
     0,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const { primaryColor } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -173,7 +176,6 @@ const styles = StyleSheet.create({
   transactionCategory: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333",
     textTransform: "capitalize",
   },
   transactionDescription: {

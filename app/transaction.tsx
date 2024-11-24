@@ -13,6 +13,7 @@ import NoTransactions from "../components/NoTransaction";
 import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
 import { useCurrency } from "../hooks/useCurrency";
+import { useTheme } from "../hooks/useTheme";
 
 interface ITransaction {
   id: string;
@@ -27,6 +28,8 @@ const ITEMS_PER_PAGE = 10;
 
 export default function TransactionsScreen() {
   const { currency } = useCurrency();
+  const { primaryColor } = useTheme();
+
   const { transactions, setTransactions } = useTransactions();
   const [filteredTransactions, setFilteredTransactions] = useState<
     ITransaction[]
@@ -120,7 +123,9 @@ export default function TransactionsScreen() {
   const renderTransaction = ({ item }: { item: (typeof transactions)[0] }) => (
     <View style={styles.transactionItem}>
       <View style={styles.transactionInfo}>
-        <Text style={styles.category}>{item.category}</Text>
+        <Text style={[styles.category, { color: primaryColor }]}>
+          {item.category}
+        </Text>
         <Text style={styles.description}>{item.description}</Text>
       </View>
       <View style={styles.transactionDetails}>
@@ -148,7 +153,9 @@ export default function TransactionsScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>All Transactions</Text>
+        <Text style={[styles.title, { color: primaryColor }]}>
+          All Transactions
+        </Text>
       </View>
 
       {/* Filters */}
@@ -170,7 +177,7 @@ export default function TransactionsScreen() {
           loadingMore ? (
             <ActivityIndicator
               size="large"
-              color="purple"
+              color={primaryColor}
               style={styles.loadingMore}
             />
           ) : null
@@ -196,7 +203,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "purple",
   },
   list: {
     paddingBottom: 60,
@@ -219,12 +225,11 @@ const styles = StyleSheet.create({
   category: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#000",
     textTransform: "capitalize",
   },
   description: {
+    color: "#333",
     fontSize: 12,
-    color: "purple",
     marginTop: 4,
     textTransform: "capitalize",
   },

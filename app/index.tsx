@@ -16,6 +16,7 @@ import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
 import { getCurrency } from "../utils/settings";
 import { useCurrency } from "../hooks/useCurrency";
+import { useTheme } from "../hooks/useTheme";
 
 interface ITransaction {
   id: string;
@@ -29,6 +30,7 @@ interface ITransaction {
 const HomeScreen = () => {
   const router = useRouter();
   const { currency } = useCurrency();
+  const { primaryColor } = useTheme();
 
   const { transactions, setTransactions } = useTransactions();
   const [loading, setLoading] = useState<boolean>(true);
@@ -111,14 +113,16 @@ const HomeScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.date}>{currentTime}</Text>
+          <Text style={[styles.date, { color: primaryColor }]}>
+            {currentTime}
+          </Text>
         </View>
       </View>
 
       {/* Account Balance */}
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceLabel}>Account Balance</Text>
-        <Text style={styles.balance}>
+        <Text style={[styles.balance, { color: primaryColor }]}>
           {formatNumberWithCommas(incomeTotal - expensesTotal)} {currency}
         </Text>
 
@@ -154,7 +158,7 @@ const HomeScreen = () => {
           loading ? (
             <ActivityIndicator
               size="large"
-              color="purple"
+              color={primaryColor}
               style={{ marginVertical: 20 }}
             />
           ) : null
@@ -179,7 +183,11 @@ const HomeScreen = () => {
               <Text style={styles.transactionAmount}>
                 {formatNumberWithCommas(Number(item.amount))} {currency}
               </Text>
-              <Text style={styles.transactionCategory}>{item.category}</Text>
+              <Text
+                style={[styles.transactionCategory, { color: primaryColor }]}
+              >
+                {item.category}
+              </Text>
             </View>
           </View>
         )}
@@ -201,7 +209,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  date: { fontSize: 12, color: "purple" },
+  date: { fontSize: 12 },
   profileContainer: { flexDirection: "row", alignItems: "center" },
   profileImage: { width: 40, height: 40, borderRadius: 20 },
   username: { fontSize: 16, marginLeft: 8 },
@@ -268,7 +276,6 @@ const styles = StyleSheet.create({
   },
   transactionAmount: { fontWeight: "bold", fontSize: 16 },
   transactionCategory: {
-    color: "purple",
     fontSize: 14,
     textTransform: "capitalize",
   },

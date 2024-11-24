@@ -9,6 +9,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCurrency } from "../../utils/settings";
 import { useCurrency } from "../../hooks/useCurrency";
+import { useTheme } from "../../hooks/useTheme";
 
 const availableCurrencies = [
   { id: "1", code: "USD", name: "US Dollar" },
@@ -23,6 +24,7 @@ const availableCurrencies = [
 
 const CurrencySettingsScreen = () => {
   const { currency, setCurrency } = useCurrency();
+  const { primaryColor, secondaryColor } = useTheme();
 
   const getSelectedCurrency = async () => {
     const selectedCurrency = await getCurrency();
@@ -44,6 +46,7 @@ const CurrencySettingsScreen = () => {
       style={[
         styles.currencyOption,
         currency === item.code && styles.selectedCurrency,
+        { borderColor: primaryColor, backgroundColor: secondaryColor },
       ]}
       onPress={() => handleCurrencyChange(item.code)}
     >
@@ -55,7 +58,9 @@ const CurrencySettingsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Choose Your Currency</Text>
+      <Text style={[styles.header, { color: primaryColor }]}>
+        Choose Your Currency
+      </Text>
       <FlatList
         data={availableCurrencies}
         keyExtractor={(item) => item.id}
@@ -77,7 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "purple",
+    // color: "purple",
   },
   list: {
     paddingBottom: 20,
@@ -95,8 +100,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   selectedCurrency: {
-    backgroundColor: "#f3e8f9",
-    borderColor: "purple",
+    // backgroundColor: "#f3e8f9",
+    // borderColor: "purple",
     borderWidth: 2,
   },
   currencyText: {

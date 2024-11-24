@@ -12,6 +12,7 @@ import { useTransactions } from "../hooks/useTransactions";
 import { StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useCurrency } from "../hooks/useCurrency";
+import { useTheme } from "../hooks/useTheme";
 
 interface ITransaction {
   id: string;
@@ -56,6 +57,7 @@ const StatisticsScreen = () => {
   const screenWidth = Dimensions.get("window").width;
   const { currency } = useCurrency();
   const { transactions } = useTransactions();
+  const { primaryColor } = useTheme();
 
   const processDataForChart = (transactions: ITransaction[]) => {
     const categoryStats = transactions.reduce((acc, t) => {
@@ -99,7 +101,7 @@ const StatisticsScreen = () => {
         <Text
           style={{
             fontSize: 16,
-            color: "purple",
+            color: primaryColor,
             fontWeight: "bold",
             textTransform: "capitalize",
           }}
@@ -145,7 +147,7 @@ const StatisticsScreen = () => {
             marginBottom: 10,
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: "purple" }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: primaryColor }}>
             Statistics
           </Text>
         </View>

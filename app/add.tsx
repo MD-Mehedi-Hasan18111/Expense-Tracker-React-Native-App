@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
+import { useTheme } from "../hooks/useTheme";
 
 interface ITransaction {
   id: string;
@@ -24,6 +25,7 @@ const AddScreen = () => {
     "expense"
   );
   const { transactions, setTransactions } = useTransactions();
+  const { primaryColor } = useTheme();
 
   // Calculate Income and Expenses totals
   const incomeTotal = transactions
@@ -270,7 +272,7 @@ const AddScreen = () => {
 
         <TouchableOpacity
           style={{
-            backgroundColor: "purple",
+            backgroundColor: primaryColor,
             padding: 10,
             borderRadius: 5,
             marginBottom: 20,
