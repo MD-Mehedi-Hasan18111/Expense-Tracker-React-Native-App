@@ -14,6 +14,7 @@ import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
 import { useCurrency } from "../hooks/useCurrency";
 import { useTheme } from "../hooks/useTheme";
+import Animated, { SlideInLeft } from "react-native-reanimated";
 
 interface ITransaction {
   id: string;
@@ -121,7 +122,7 @@ export default function TransactionsScreen() {
   };
 
   const renderTransaction = ({ item }: { item: (typeof transactions)[0] }) => (
-    <View style={styles.transactionItem}>
+    <Animated.View entering={SlideInLeft} style={styles.transactionItem}>
       <View style={styles.transactionInfo}>
         <Text style={[styles.category, { color: primaryColor }]}>
           {item.category}
@@ -141,7 +142,7 @@ export default function TransactionsScreen() {
         </Text>
         <Text style={styles.time}>{moment(item.date).format("DD MMM LT")}</Text>
       </View>
-    </View>
+    </Animated.View>
   );
 
   const paginatedTransactions = filteredTransactions.slice(

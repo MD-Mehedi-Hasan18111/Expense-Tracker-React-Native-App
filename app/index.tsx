@@ -14,9 +14,13 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import NoTransactions from "../components/NoTransaction";
 import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
-import { getCurrency } from "../utils/settings";
 import { useCurrency } from "../hooks/useCurrency";
 import { useTheme } from "../hooks/useTheme";
+import Animated, {
+  FadeIn,
+  SlideInLeft,
+  SlideInRight,
+} from "react-native-reanimated";
 
 interface ITransaction {
   id: string;
@@ -112,11 +116,11 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
+        <Animated.View entering={FadeIn}>
           <Text style={[styles.date, { color: primaryColor }]}>
             {currentTime}
           </Text>
-        </View>
+        </Animated.View>
       </View>
 
       {/* Account Balance */}
@@ -127,19 +131,19 @@ const HomeScreen = () => {
         </Text>
 
         <View style={styles.incomeExpense}>
-          <TouchableOpacity style={styles.incomeBox}>
+          <Animated.View entering={SlideInLeft} style={styles.incomeBox}>
             <Text style={styles.incomeText}>Income</Text>
             <Text style={styles.incomeAmount}>
               {formatNumberWithCommas(incomeTotal)} {currency}
             </Text>
-          </TouchableOpacity>
+          </Animated.View>
 
-          <TouchableOpacity style={styles.expenseBox}>
+          <Animated.View entering={SlideInRight} style={styles.expenseBox}>
             <Text style={styles.expenseText}>Expenses</Text>
             <Text style={styles.expenseAmount}>
               {formatNumberWithCommas(expensesTotal)} {currency}
             </Text>
-          </TouchableOpacity>
+          </Animated.View>
         </View>
       </View>
 
@@ -164,7 +168,7 @@ const HomeScreen = () => {
           ) : null
         }
         renderItem={({ item }) => (
-          <View style={styles.transactionCard}>
+          <Animated.View entering={SlideInLeft} style={styles.transactionCard}>
             <Text
               style={[
                 styles.transactionIcon,
@@ -189,7 +193,7 @@ const HomeScreen = () => {
                 {item.category}
               </Text>
             </View>
-          </View>
+          </Animated.View>
         )}
         showsVerticalScrollIndicator={false}
         style={{ marginBottom: 50 }}
