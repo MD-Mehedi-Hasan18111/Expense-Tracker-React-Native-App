@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import { useTransactions } from "../hooks/useTransactions";
 import { useTheme } from "../hooks/useTheme";
+import PreviewBudgets from "../components/PreviewBudget";
 
 interface ITransaction {
   id: string;
@@ -180,117 +181,177 @@ const AddScreen = () => {
     { label: "Bonus", value: "bonus", transactionTypes: "income" },
   ];
 
+  const [screenName, setScreenName] = useState<
+    "add-transaction" | "view-budgets"
+  >("add-transaction");
+
   return (
     <View
       style={{
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         padding: 20,
       }}
     >
-      <Text
-        style={{
-          fontSize: 24,
-          marginBottom: 30,
-          textAlign: "center",
-          fontWeight: "700",
-        }}
-      >
-        Add Transaction
-      </Text>
-
-      {/* Transaction Form */}
-      <View style={{ rowGap: 12 }}>
-        <TextInput
-          placeholder="Enter Amount"
-          keyboardType="numeric"
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 10,
-            borderRadius: 5,
-            marginBottom: 15,
-          }}
-          value={amount}
-          onChangeText={setAmount}
-        />
-
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            paddingHorizontal: 4,
-            borderRadius: 5,
-            marginBottom: 15,
-          }}
-        >
-          <Picker
-            selectedValue={`${category}-${transactionType}`}
-            onValueChange={(itemValue) => {
-              setCategory(itemValue?.split("-")[0]);
-              setTransactionType(
-                itemValue?.split("-")[1] as "expense" | "income"
-              );
-            }}
-            style={{
-              height: "auto",
-              width: "100%",
-            }}
-          >
-            {transactionCategories?.map((category) => {
-              return (
-                <Picker.Item
-                  key={category.value}
-                  label={`${category.label} ${
-                    category.transactionTypes
-                      ? `(${
-                          category.transactionTypes.charAt(0).toUpperCase() +
-                          category.transactionTypes.slice(1).toLowerCase()
-                        })`
-                      : ""
-                  }`}
-                  value={`${category.value}-${category.transactionTypes}`}
-                  style={{ textTransform: "capitalize" }}
-                />
-              );
-            })}
-          </Picker>
-        </View>
-
-        <TextInput
-          placeholder="Write transaction description"
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 10,
-            borderRadius: 5,
-            marginBottom: 15,
-          }}
-          value={description}
-          onChangeText={setDescription}
-        />
-
+      {/* Tabs Section */}
+      <View style={{ flexDirection: "row", marginBottom: 20 }}>
         <TouchableOpacity
+          onPress={() => setScreenName("add-transaction")}
           style={{
-            backgroundColor: primaryColor,
+            flex: 1,
             padding: 10,
-            borderRadius: 5,
-            marginBottom: 20,
+            backgroundColor:
+              screenName === "add-transaction" ? primaryColor : "#ddd",
+            borderTopLeftRadius: 5,
+            borderBottomLeftRadius: 5,
+            alignItems: "center",
           }}
-          onPress={handleSaveTransaction}
         >
           <Text
             style={{
-              color: "#fff",
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "600",
+              color: screenName === "add-transaction" ? "#fff" : "#000",
             }}
           >
-            {isLoading ? "Loading..." : "Continue"}
+            Add Transaction
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setScreenName("view-budgets")}
+          style={{
+            flex: 1,
+            padding: 10,
+            backgroundColor:
+              screenName === "view-budgets" ? primaryColor : "#ddd",
+            borderTopRightRadius: 5,
+            borderBottomRightRadius: 5,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{ color: screenName === "view-budgets" ? "#fff" : "#000" }}
+          >
+            View Budgets
           </Text>
         </TouchableOpacity>
       </View>
+
+      {screenName === "add-transaction" ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "flex-start",
+            padding: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              marginBottom: 30,
+              textAlign: "center",
+              fontWeight: "700",
+            }}
+          >
+            Add Transaction
+          </Text>
+
+          {/* Transaction Form */}
+          <View style={{ rowGap: 12 }}>
+            <TextInput
+              placeholder="Enter Amount"
+              keyboardType="numeric"
+              style={{
+                borderWidth: 1,
+                borderColor: "#ccc",
+                padding: 10,
+                borderRadius: 5,
+                marginBottom: 15,
+              }}
+              value={amount}
+              onChangeText={setAmount}
+            />
+
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#ccc",
+                paddingHorizontal: 4,
+                borderRadius: 5,
+                marginBottom: 15,
+              }}
+            >
+              <Picker
+                selectedValue={`${category}-${transactionType}`}
+                onValueChange={(itemValue) => {
+                  setCategory(itemValue?.split("-")[0]);
+                  setTransactionType(
+                    itemValue?.split("-")[1] as "expense" | "income"
+                  );
+                }}
+                style={{
+                  height: "auto",
+                  width: "100%",
+                }}
+              >
+                {transactionCategories?.map((category) => {
+                  return (
+                    <Picker.Item
+                      key={category.value}
+                      label={`${category.label} ${
+                        category.transactionTypes
+                          ? `(${
+                              category.transactionTypes
+                                .charAt(0)
+                                .toUpperCase() +
+                              category.transactionTypes.slice(1).toLowerCase()
+                            })`
+                          : ""
+                      }`}
+                      value={`${category.value}-${category.transactionTypes}`}
+                      style={{ textTransform: "capitalize" }}
+                    />
+                  );
+                })}
+              </Picker>
+            </View>
+
+            <TextInput
+              placeholder="Write transaction description"
+              style={{
+                borderWidth: 1,
+                borderColor: "#ccc",
+                padding: 10,
+                borderRadius: 5,
+                marginBottom: 15,
+              }}
+              value={description}
+              onChangeText={setDescription}
+            />
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: primaryColor,
+                padding: 10,
+                borderRadius: 5,
+                marginBottom: 20,
+              }}
+              onPress={handleSaveTransaction}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                {isLoading ? "Loading..." : "Continue"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <PreviewBudgets />
+      )}
     </View>
   );
 };

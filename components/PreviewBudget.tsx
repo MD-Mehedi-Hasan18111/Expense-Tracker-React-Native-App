@@ -4,8 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons"; // Assuming you're using this icon library
 import { Table, Row, Rows } from "react-native-table-component";
 import moment from "moment";
-import { useCurrency } from "../../hooks/useCurrency";
-import { useTheme } from "../../hooks/useTheme";
+import { useCurrency } from "../hooks/useCurrency";
+import { useTheme } from "../hooks/useTheme";
 
 const PreviewBudgets = () => {
   const { currency } = useCurrency();
@@ -104,9 +104,10 @@ const PreviewBudgets = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
+    height: 610,
+    padding: 15,
     backgroundColor: "#f9f9f9",
+    overflow: 'scroll',
   },
   deleteButton: {
     backgroundColor: "#ff4d4d",

@@ -44,19 +44,13 @@ const groupedSettings = [
         icon: "donut-large" as const,
         route: "/settings/set-budget",
       },
-      {
-        id: "5",
-        title: "View Budgets",
-        icon: "donut-large" as const,
-        route: "/settings/view-budget",
-      },
     ],
   },
   {
     sectionTitle: "Data Management",
     data: [
       {
-        id: "6",
+        id: "5",
         title: "Reset Data",
         icon: "restore" as const,
         route: "/settings/reset-data",
