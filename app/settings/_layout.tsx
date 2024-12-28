@@ -21,6 +21,14 @@ export default function SettingsLayout() {
         options={{ title: "Manage Transaction", headerShadowVisible: false }}
       />
       <Stack.Screen
+        name="set-budget"
+        options={{ title: "Set Budget", headerShadowVisible: false }}
+      />
+      <Stack.Screen
+        name="view-budget"
+        options={{ title: "My Budgets", headerShadowVisible: false }}
+      />
+      <Stack.Screen
         name="reset-data"
         options={{ title: "Reset Data", headerShadowVisible: false }}
       />
